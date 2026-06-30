@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>游戏王卡片数据库</title>
-  <!-- Tailwind CSS -->
+  <title>游戏王DIY卡片数据库</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
+    /* ===== 全局重置 ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
@@ -16,6 +15,7 @@
       color: #1a1a2e;
     }
 
+    /* ===== 导航栏 ===== */
     .navbar {
       background: #0b1a33;
       color: white;
@@ -85,6 +85,7 @@
       padding: 24px 20px 40px;
     }
 
+    /* ===== 筛选栏 ===== */
     .filter-bar {
       background: white;
       border-radius: 12px;
@@ -93,73 +94,90 @@
       margin-bottom: 28px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 6px;
     }
+
     .filter-row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 12px 20px;
-      padding-bottom: 10px;
+      gap: 4px 12px;
+      padding: 6px 0;
+      margin: 0;
+      border-bottom: 1px solid #f0f2f5; /* 恢复淡色边框 */
+    }
+    .filter-row:last-child {
+      border-bottom: none;
+    }
+    .filter-row:first-child {
+      border-bottom: none;
+    }
+    #moreToggleRow {
       border-bottom: 1px solid #f0f2f5;
     }
-    .filter-row:last-child { border-bottom: none; padding-bottom: 0; }
+    #moreFilters .filter-row {
+      border-bottom: 1px solid #f0f2f5;
+    }
+    #moreFilters .filter-row:last-child {
+      border-bottom: none;
+    }
+
+    #moreFilters {
+      margin: 0;
+      padding: 0;
+    }
+
     .filter-row .row-label {
+      width: 80px;
+      flex-shrink: 0;
       font-size: 0.85rem;
       font-weight: 600;
       color: #555;
-      min-width: 80px;
+      text-align: right;
+      line-height: 1.4;
     }
+
     .btn-group {
+      flex: 1;
+      min-width: 0;
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      align-items: center;
+      gap: 4px;
     }
+
     .filter-btn {
-      padding: 6px 18px;
-      border-radius: 30px;
-      font-size: 0.8rem;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
       font-weight: 500;
-      border: 1.5px solid #d0d5dd;
+      border: 1px solid #d0d5dd;
       background: white;
       color: #333;
       cursor: pointer;
       transition: 0.15s;
       user-select: none;
+      line-height: 1.4;
+      white-space: nowrap;
     }
     .filter-btn:hover { background: #eef2f7; }
     .filter-btn.active { background: #0b1a33; color: white; border-color: #0b1a33; }
 
     .logic-btn {
-      padding: 6px 18px;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      border: 1.5px solid #d0d5dd;
-      background: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid #b3c9f0;
+      background: #e8effa;
+      color: #1a4b8c;
       cursor: pointer;
       transition: 0.15s;
-      color: #555;
+      line-height: 1.4;
+      white-space: nowrap;
     }
-    .logic-btn:hover { background: #eef2f7; }
+    .logic-btn:hover { background: #d4e0f2; }
     .logic-btn.active { background: #0b1a33; color: white; border-color: #0b1a33; }
-
-    .exclude-label { color: #c0392b; font-weight: 700; }
-    .filter-row.hidden { display: none; }
-
-    #searchInput {
-      padding: 8px 18px;
-      border-radius: 30px;
-      border: 1.5px solid #d0d5dd;
-      font-size: 0.9rem;
-      transition: 0.2s;
-      background: white;
-    }
-    #searchInput:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
-    }
 
     #moreToggleBtn {
       background: none;
@@ -175,14 +193,33 @@
       border-radius: 20px;
       transition: background 0.2s;
     }
-    #moreToggleBtn:hover {
-      background: #eef2f7;
+    #moreToggleBtn:hover { background: #eef2f7; }
+
+    #moreFilters.hidden { display: none; }
+
+    #includeRow .logic-btn-group {
+      margin-left: auto;
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
     }
 
-    #moreFilters.hidden {
-      display: none;
+    /* ===== 搜索框 ===== */
+    #searchInput {
+      padding: 8px 18px;
+      border-radius: 30px;
+      border: 1.5px solid #d0d5dd;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      background: white;
+    }
+    #searchInput:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
     }
 
+    /* ===== 结果统计 ===== */
     .result-stats {
       font-size: 0.85rem;
       color: #666;
@@ -202,6 +239,7 @@
     }
     .result-stats .sort-toggle:hover { color: #1d4ed8; }
 
+    /* ===== 卡片网格 ===== */
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -216,6 +254,7 @@
       transition: all 0.25s ease;
       cursor: pointer;
       border: 1px solid rgba(0,0,0,0.04);
+      position: relative;
     }
     .card-item:hover {
       transform: translateY(-6px);
@@ -244,19 +283,13 @@
       pointer-events: none;
       display: none;
     }
-    .card-item.incomplete .card-incomplete-overlay {
-      display: block;
-    }
-    .card-item.incomplete .card-info .name {
-      color: #999 !important;
-    }
+    .card-item.incomplete .card-incomplete-overlay { display: block; }
+    .card-item.incomplete .card-info .name { color: #999 !important; }
     .card-item.incomplete .card-info .tags .badge {
       color: #aaa !important;
       background: #f0f0f0 !important;
     }
-    .card-item.incomplete .card-info .stats {
-      color: #bbb !important;
-    }
+    .card-item.incomplete .card-info .stats { color: #bbb !important; }
 
     .card-item .card-info {
       padding: 12px 14px 14px;
@@ -296,6 +329,30 @@
       flex-wrap: wrap;
     }
 
+    /* 系列标签 - 浅色无阴影 */
+    .card-series {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: #f0f0f0;
+      color: #333;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: 1px solid #d0d5dd;
+      pointer-events: none;
+      z-index: 2;
+      white-space: nowrap;
+      max-width: calc(100% - 16px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    /* ===== 分页 ===== */
     .pagination {
       display: flex;
       justify-content: center;
@@ -321,6 +378,7 @@
     .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
     .pagination .page-num { font-size: 0.85rem; color: #555; }
 
+    /* ===== 详情弹窗 ===== */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -355,7 +413,6 @@
       font-size: 2rem;
       color: #999;
       cursor: pointer;
-      transition: 0.2s;
       background: none;
       border: none;
       line-height: 1;
@@ -372,6 +429,7 @@
     .modal-image-wrapper {
       width: 100%;
       cursor: pointer;
+      position: relative;
     }
     .modal-image-wrapper img {
       width: 100%;
@@ -442,9 +500,7 @@
       color: #555;
       margin-right: 4px;
     }
-    .modal-right .modal-detail-line .value {
-      font-weight: 600;
-    }
+    .modal-right .modal-detail-line .value { font-weight: 600; }
     .value-attr-暗 { color: #7b2fbe; }
     .value-attr-光 { color: #f1c40f; }
     .value-attr-地 { color: #8B6B4A; }
@@ -473,7 +529,7 @@
       padding: 12px 16px;
       background: #f8f9fa;
       border-radius: 10px;
-      border: 1px solid #e8ecf1;
+      border: 1px solid #d0d5dd;  /* 原来2px改回1px，仅颜色加深稍后 */
       font-size: 0.95rem;
       color: #444;
       line-height: 1.6;
@@ -486,15 +542,16 @@
       content: '暂无描述';
       color: #aaa;
     }
+    /* 灵摆效果 - 浅绿色背景，深绿色边框（1px） */
     .modal-right .modal-effect-box.pendulum {
-      border-color: #8e44ad;
-      background: #f4ecf7;
+      border-color: #2e7d32;      /* 深绿色，不加粗 */
+      background: #e8f5e9;
     }
     .modal-right .modal-effect-box.pendulum::before {
       content: '【灵摆效果】';
       display: block;
       font-weight: 700;
-      color: #8e44ad;
+      color: #2e7d32;
       margin-bottom: 6px;
     }
     .modal-right .modal-effect-box.monster::before {
@@ -505,6 +562,25 @@
       margin-bottom: 6px;
     }
 
+    /* 详情页系列 - 右对齐，无标签 */
+    .modal-series {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .modal-series .series-badge {
+      background: #1a1a2e;
+      color: white;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ===== 图片预览遮罩 ===== */
     .image-preview-overlay {
       position: fixed;
       inset: 0;
@@ -545,14 +621,31 @@
     }
     .image-preview-overlay .preview-wrapper { pointer-events: auto; }
 
+    /* ===== 响应式 ===== */
     @media (max-width: 768px) {
       .navbar { padding: 0 16px; height: 56px; }
       .navbar .logo { font-size: 1rem; }
       .navbar .logo i { font-size: 1.4rem; }
       .navbar .nav-right a { font-size: 0.75rem; padding: 4px 10px; }
-      .filter-bar { padding: 16px; }
-      .filter-row { flex-direction: column; align-items: stretch; gap: 8px; padding-bottom: 12px; }
-      .filter-row .row-label { min-width: auto; }
+      .filter-bar { padding: 16px; gap: 6px; }
+      .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 6px 0;
+      }
+      .filter-row .row-label {
+        width: auto;
+        text-align: left;
+      }
+      .btn-group {
+        flex: none;
+        width: 100%;
+      }
+      #includeRow .logic-btn-group {
+        margin-left: 0;
+        margin-top: 4px;
+      }
       .card-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
       .modal-box { flex-direction: column; max-width: 500px; padding: 20px 16px 24px; }
       .modal-left { flex: none; width: 160px; margin: 0 auto; }
@@ -572,901 +665,930 @@
   </style>
 </head>
 <body>
+  <!-- ===== 导航 ===== -->
+  <nav class="navbar">
+    <div class="logo"><i class="fas fa-dragon"></i><span>DIY卡片数据库</span></div>
+    <div class="nav-right">
+      <a href="#"><i class="fas fa-search"></i> 卡片检索</a>
+      <a href="#"><i class="fas fa-layer-group"></i> 牌组检索</a>
+      <a class="load-btn" id="loadDataBtn"><i class="fas fa-upload"></i> 加载数据</a>
+      <a class="clear-btn" id="clearCacheBtn"><i class="fas fa-trash"></i> 清除缓存</a>
+      <a href="#" class="deck-btn"><i class="fas fa-user"></i> 我的牌组</a>
+    </div>
+    <input type="file" id="fileInput" accept=".json" />
+  </nav>
 
-<!-- ===== 顶部导航 ===== -->
-<nav class="navbar">
-  <div class="logo"><i class="fas fa-dragon"></i><span>卡片数据库</span></div>
-  <div class="nav-right">
-    <a href="#"><i class="fas fa-search"></i> 卡片检索</a>
-    <a href="#"><i class="fas fa-layer-group"></i> 牌组检索</a>
-    <a class="load-btn" id="loadDataBtn"><i class="fas fa-upload"></i> 加载数据</a>
-    <a class="clear-btn" id="clearCacheBtn"><i class="fas fa-trash"></i> 清除缓存</a>
-    <a href="#" class="deck-btn"><i class="fas fa-user"></i> 我的牌组</a>
-  </div>
-  <input type="file" id="fileInput" accept=".json" />
-</nav>
+  <!-- ===== 主内容 ===== -->
+  <div class="main-container">
+    <div class="filter-bar" id="filterBar">
+      <!-- 搜索行 -->
+      <div class="filter-row">
+        <span class="row-label">搜索</span>
+        <div class="flex flex-wrap items-center gap-2 flex-1">
+          <input type="text" id="searchInput" placeholder="输入卡牌名称..." class="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm" />
+          <button id="searchBtn" class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition text-sm font-medium"><i class="fas fa-search"></i> 检索</button>
+          <button id="clearSearchBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition text-sm">清除</button>
+        </div>
+      </div>
 
-<!-- ===== 主内容 ===== -->
-<div class="main-container">
-  <div class="filter-bar" id="filterBar">
-    <!-- 搜索行 -->
-    <div class="filter-row">
-      <span class="row-label">搜索</span>
-      <div class="flex flex-wrap items-center gap-2 flex-1">
-        <input type="text" id="searchInput" placeholder="输入卡牌名称..." class="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm" />
-        <button id="searchBtn" class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition text-sm font-medium"><i class="fas fa-search"></i> 检索</button>
-        <button id="clearSearchBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition text-sm">清除</button>
+      <!-- 分类行 -->
+      <div class="filter-row">
+        <span class="row-label">分类</span>
+        <div class="btn-group" id="typeTags">
+          <button class="filter-btn active" data-type="">所有卡</button>
+          <button class="filter-btn" data-type="怪兽">怪兽卡</button>
+          <button class="filter-btn" data-type="魔法">魔法卡</button>
+          <button class="filter-btn" data-type="陷阱">陷阱卡</button>
+        </div>
+      </div>
+
+      <!-- 更多筛选切换行 -->
+      <div class="filter-row" id="moreToggleRow">
+        <span class="row-label">更多筛选</span>
+        <button id="moreToggleBtn">
+          <span id="moreToggleIcon">▶</span> <span id="moreToggleText">展开</span>
+        </button>
+      </div>
+
+      <!-- 折叠的筛选内容容器 -->
+      <div id="moreFilters" class="hidden">
+        <!-- 动态生成的筛选行 -->
       </div>
     </div>
 
-    <!-- 分类行 -->
-    <div class="filter-row">
-      <span class="row-label">分类</span>
-      <div class="btn-group" id="typeTags">
-        <button class="filter-btn active" data-type="">所有卡</button>
-        <button class="filter-btn" data-type="怪兽">怪兽卡</button>
-        <button class="filter-btn" data-type="魔法">魔法卡</button>
-        <button class="filter-btn" data-type="陷阱">陷阱卡</button>
+    <!-- 结果统计 & 分页 -->
+    <div class="result-stats">
+      <span>共 <strong id="totalCount">0</strong> 张卡片</span>
+      <div class="flex items-center gap-4">
+        <span class="sort-toggle" id="sortToggle">倒序（新→旧）</span>
+        <span id="pageInfo">第 1 / 1 页</span>
       </div>
     </div>
 
-    <!-- 更多筛选切换行 -->
-    <div class="filter-row" id="moreToggleRow">
-      <span class="row-label">更多筛选</span>
-      <button id="moreToggleBtn">
-        <span id="moreToggleIcon">▶</span> <span id="moreToggleText">展开</span>
-      </button>
-    </div>
+    <div class="card-grid" id="cardGrid"><div class="col-span-full text-center text-gray-400 py-16">⏳ 正在加载数据...</div></div>
 
-    <!-- 折叠的筛选内容容器 -->
-    <div id="moreFilters" class="hidden">
-      <!-- 动态生成的筛选行 -->
+    <div class="pagination">
+      <button id="prevPage" disabled><i class="fas fa-chevron-left"></i> 上一页</button>
+      <span class="page-num" id="pageNum">1 / 1</span>
+      <button id="nextPage" disabled>下一页 <i class="fas fa-chevron-right"></i></button>
     </div>
   </div>
 
-  <!-- 结果统计 & 分页 -->
-  <div class="result-stats">
-    <span>共 <strong id="totalCount">0</strong> 张卡片</span>
-    <div class="flex items-center gap-4">
-      <span class="sort-toggle" id="sortToggle">倒序（新→旧）</span>
-      <span id="pageInfo">第 1 / 1 页</span>
-    </div>
-  </div>
-
-  <div class="card-grid" id="cardGrid"><div class="col-span-full text-center text-gray-400 py-16">⏳ 正在加载数据...</div></div>
-
-  <div class="pagination">
-    <button id="prevPage" disabled><i class="fas fa-chevron-left"></i> 上一页</button>
-    <span class="page-num" id="pageNum">1 / 1</span>
-    <button id="nextPage" disabled>下一页 <i class="fas fa-chevron-right"></i></button>
-  </div>
-</div>
-
-<!-- ===== 详情弹窗 ===== -->
-<div class="modal-overlay" id="detailModal">
-  <div class="modal-box">
-    <button class="close-btn" id="modalClose">&times;</button>
-    <div class="modal-left" id="modalLeft">
-      <div class="modal-image-wrapper">
-        <img id="modalImg" src="" alt="卡牌图片" />
+  <!-- ===== 详情弹窗 ===== -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-box">
+      <button class="close-btn" id="modalClose">&times;</button>
+      <div class="modal-left" id="modalLeft">
+        <div class="modal-image-wrapper">
+          <img id="modalImg" src="" alt="卡牌图片" />
+        </div>
+        <div class="image-nav" id="imageNav">
+          <button id="prevImageBtn" disabled><i class="fas fa-chevron-left"></i></button>
+          <span class="counter" id="imageCounter">1 / 1</span>
+          <button id="nextImageBtn" disabled><i class="fas fa-chevron-right"></i></button>
+        </div>
       </div>
-      <div class="image-nav" id="imageNav">
-        <button id="prevImageBtn" disabled><i class="fas fa-chevron-left"></i></button>
-        <span class="counter" id="imageCounter">1 / 1</span>
-        <button id="nextImageBtn" disabled><i class="fas fa-chevron-right"></i></button>
-      </div>
-    </div>
-    <div class="modal-right">
-      <div class="modal-name" id="modalName">卡牌名称</div>
-      <div id="modalDetails"></div>
-      <div class="modal-effect-area" id="modalEffectArea">
-        <div id="pendulumEffect" class="modal-effect-box pendulum" style="display:none;"></div>
-        <div id="monsterEffect" class="modal-effect-box monster"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== 图片预览遮罩 ===== -->
-<div class="image-preview-overlay" id="imagePreview">
-  <div class="preview-wrapper" id="previewWrapper">
-    <img id="previewImage" src="" alt="原图" draggable="false" />
-  </div>
-</div>
-
-<script>
-  // ================================================================
-  //  数据定义与工具函数
-  // ================================================================
-  const ATTRIBUTES = ['暗', '光', '地', '水', '炎', '风', '神'];
-  const RACES = [
-    '魔法师族', '龙族', '不死族', '战士族', '兽战士族', '兽族', '鸟兽族',
-    '恶魔族', '天使族', '昆虫族', '恐龙族', '爬虫类族', '鱼族', '海龙族',
-    '水族', '炎族', '雷族', '岩石族', '植物族', '机械族', '念动力族',
-    '幻神兽族', '创造神族', '幻龙族', '电子界族', '幻想魔族'
-  ];
-  const LEVELS = Array.from({ length: 14 }, (_, i) => i);
-  const SCALES = Array.from({ length: 14 }, (_, i) => i);
-  const LINKS = [1,2,3,4,5,6];
-  const SPELL_TRAP_TYPES = ['装备', '场地', '速攻', '仪式', '永续', '反击', '通常'];
-  const MONSTER_TYPES = [
-    '通常', '效果', '仪式', '融合', '同步', '超量',
-    '卡通', '灵魂', '联合', '二重', '协调',
-    '反转', '灵摆', '特殊召唤', '连接'
-  ];
-
-  function getMonsterTypeDisplay(monsterType) {
-    if (!monsterType) return '';
-    if (Array.isArray(monsterType)) return monsterType.join('／');
-    return monsterType;
-  }
-  function normalizeMonsterType(monsterType) {
-    if (!monsterType) return [];
-    if (Array.isArray(monsterType)) return monsterType;
-    if (typeof monsterType === 'string') {
-      return monsterType.split('／').filter(s => s.trim() !== '');
-    }
-    return [];
-  }
-
-  // ================================================================
-  //  状态
-  // ================================================================
-  let allCards = [], filteredCards = [], currentPage = 1;
-  const pageSize = 36;
-  let currentSort = 'desc';
-
-  const moreFilters = document.getElementById('moreFilters');
-  const moreToggleBtn = document.getElementById('moreToggleBtn');
-  const moreToggleIcon = document.getElementById('moreToggleIcon');
-  const moreToggleText = document.getElementById('moreToggleText');
-  const typeTags = document.querySelectorAll('#typeTags .filter-btn');
-  const cardGrid = document.getElementById('cardGrid');
-  const totalCount = document.getElementById('totalCount');
-  const pageInfo = document.getElementById('pageInfo');
-  const pageNum = document.getElementById('pageNum');
-  const prevBtn = document.getElementById('prevPage');
-  const nextBtn = document.getElementById('nextPage');
-  const loadDataBtn = document.getElementById('loadDataBtn');
-  const fileInput = document.getElementById('fileInput');
-  const searchInput = document.getElementById('searchInput');
-  const searchBtn = document.getElementById('searchBtn');
-  const clearSearchBtn = document.getElementById('clearSearchBtn');
-  const sortToggle = document.getElementById('sortToggle');
-
-  let attrGroup, raceGroup, levelGroup, scaleGroup, linkGroup, spellTrapGroup;
-  let monsterTypeInclude, monsterTypeExclude, includeLogicGroup;
-
-  const modal = document.getElementById('detailModal');
-  const modalClose = document.getElementById('modalClose');
-  const modalImg = document.getElementById('modalImg');
-  const modalLeft = document.getElementById('modalLeft');
-  const modalName = document.getElementById('modalName');
-  const modalDetails = document.getElementById('modalDetails');
-  const pendulumEffect = document.getElementById('pendulumEffect');
-  const monsterEffect = document.getElementById('monsterEffect');
-
-  const imagePreview = document.getElementById('imagePreview');
-  const previewWrapper = document.getElementById('previewWrapper');
-  const previewImage = document.getElementById('previewImage');
-
-  const prevImageBtn = document.getElementById('prevImageBtn');
-  const nextImageBtn = document.getElementById('nextImageBtn');
-  const imageCounter = document.getElementById('imageCounter');
-  let currentCard = null;
-  let currentImageIndex = 0;
-  let imageList = [];
-
-  let previewState = {
-    scale: 1,
-    translateX: 0,
-    translateY: 0,
-    isDragging: false,
-    startX: 0, startY: 0,
-    originX: 0, originY: 0,
-    hasDragged: false
-  };
-
-  // ================================================================
-  //  折叠切换
-  // ================================================================
-  let isMoreFiltersOpen = false;
-  function toggleMoreFilters() {
-    isMoreFiltersOpen = !isMoreFiltersOpen;
-    if (isMoreFiltersOpen) {
-      moreFilters.classList.remove('hidden');
-      moreToggleIcon.textContent = '▼';
-      moreToggleText.textContent = '收起';
-    } else {
-      moreFilters.classList.add('hidden');
-      moreToggleIcon.textContent = '▶';
-      moreToggleText.textContent = '展开';
-    }
-  }
-  moreToggleBtn.addEventListener('click', toggleMoreFilters);
-
-  // ================================================================
-  //  筛选初始化
-  // ================================================================
-  function initFilters() {
-    moreFilters.innerHTML = '';
-
-    const rows = [
-      { id: 'attrRow', label: '属性', items: ATTRIBUTES, monster: true },
-      { id: 'raceRow', label: '种族', items: RACES, monster: true },
-      { id: 'levelRow', label: '等级/阶级', items: LEVELS, monster: true },
-      { id: 'scaleRow', label: '灵摆刻度', items: SCALES, monster: true },
-      { id: 'linkRow', label: '连接值', items: LINKS, monster: true },
-      { id: 'spellTrapRow', label: '魔陷种类', items: SPELL_TRAP_TYPES, monster: false, spelltrap: true },
-    ];
-
-    rows.forEach(row => {
-      const div = document.createElement('div');
-      div.className = 'filter-row';
-      if (row.monster) div.dataset.monster = 'true';
-      if (row.spelltrap) div.dataset.spelltrap = 'true';
-      div.id = row.id;
-      const label = document.createElement('span');
-      label.className = 'row-label';
-      label.textContent = row.label;
-      div.appendChild(label);
-      const group = document.createElement('div');
-      group.className = 'btn-group';
-      group.id = row.id + 'Group';
-      row.items.forEach(item => {
-        const btn = document.createElement('button');
-        btn.className = 'filter-btn';
-        btn.dataset.value = String(item);
-        btn.textContent = item;
-        btn.addEventListener('click', () => { btn.classList.toggle('active'); refresh(); });
-        group.appendChild(btn);
-      });
-      div.appendChild(group);
-      moreFilters.appendChild(div);
-      if (row.id === 'attrRow') attrGroup = group;
-      else if (row.id === 'raceRow') raceGroup = group;
-      else if (row.id === 'levelRow') levelGroup = group;
-      else if (row.id === 'scaleRow') scaleGroup = group;
-      else if (row.id === 'linkRow') linkGroup = group;
-      else if (row.id === 'spellTrapRow') spellTrapGroup = group;
-    });
-
-    // 特性包含
-    const includeRow = document.createElement('div');
-    includeRow.className = 'filter-row';
-    includeRow.id = 'includeRow';
-    includeRow.dataset.monster = 'true';
-    const includeLabel = document.createElement('span');
-    includeLabel.className = 'row-label';
-    includeLabel.textContent = '怪兽特性（包含）';
-    includeRow.appendChild(includeLabel);
-    const includeGroup = document.createElement('div');
-    includeGroup.className = 'btn-group';
-    includeGroup.id = 'monsterTypeInclude';
-    MONSTER_TYPES.forEach(item => {
-      const btn = document.createElement('button');
-      btn.className = 'filter-btn';
-      btn.dataset.value = item;
-      btn.textContent = item;
-      btn.addEventListener('click', () => { btn.classList.toggle('active'); refresh(); });
-      includeGroup.appendChild(btn);
-    });
-    includeRow.appendChild(includeGroup);
-    const logicGroup = document.createElement('div');
-    logicGroup.className = 'btn-group';
-    logicGroup.style.marginLeft = '8px';
-    ['OR', 'AND'].forEach(logic => {
-      const btn = document.createElement('button');
-      btn.className = 'logic-btn' + (logic === 'OR' ? ' active' : '');
-      btn.dataset.logic = logic.toLowerCase();
-      btn.textContent = logic;
-      btn.addEventListener('click', () => {
-        logicGroup.querySelectorAll('.logic-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        refresh();
-      });
-      logicGroup.appendChild(btn);
-    });
-    includeRow.appendChild(logicGroup);
-    moreFilters.appendChild(includeRow);
-    monsterTypeInclude = includeGroup;
-    includeLogicGroup = logicGroup;
-
-    // 特性排除
-    const excludeRow = document.createElement('div');
-    excludeRow.className = 'filter-row';
-    excludeRow.id = 'excludeRow';
-    excludeRow.dataset.monster = 'true';
-    const excludeLabel = document.createElement('span');
-    excludeLabel.className = 'row-label exclude-label';
-    excludeLabel.textContent = '怪兽特性（排除）';
-    excludeRow.appendChild(excludeLabel);
-    const excludeGroup = document.createElement('div');
-    excludeGroup.className = 'btn-group';
-    excludeGroup.id = 'monsterTypeExclude';
-    MONSTER_TYPES.forEach(item => {
-      const btn = document.createElement('button');
-      btn.className = 'filter-btn';
-      btn.dataset.value = item;
-      btn.textContent = item;
-      btn.addEventListener('click', () => { btn.classList.toggle('active'); refresh(); });
-      excludeGroup.appendChild(btn);
-    });
-    excludeRow.appendChild(excludeGroup);
-    moreFilters.appendChild(excludeRow);
-    monsterTypeExclude = excludeGroup;
-
-    document.querySelectorAll('[data-spelltrap="true"]').forEach(el => el.classList.add('hidden'));
-
-    typeTags.forEach(btn => {
-      btn.removeEventListener('click', typeClickHandler);
-      btn.addEventListener('click', typeClickHandler);
-    });
-
-    toggleFilterRows();
-  }
-
-  function typeClickHandler() {
-    typeTags.forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    toggleFilterRows();
-    refresh();
-  }
-
-  function toggleFilterRows() {
-    const type = getCurrentType();
-    const isAll = (type === '');
-    const isMonster = (type === '怪兽');
-    const isSpellTrap = (type === '魔法' || type === '陷阱');
-
-    document.querySelectorAll('[data-monster="true"]').forEach(el => {
-      el.classList.toggle('hidden', !(isAll || isMonster));
-    });
-    document.querySelectorAll('[data-spelltrap="true"]').forEach(el => {
-      el.classList.toggle('hidden', !(isAll || isSpellTrap));
-    });
-
-    if (!(isAll || isMonster)) {
-      clearGroup(attrGroup);
-      clearGroup(raceGroup);
-      clearGroup(levelGroup);
-      clearGroup(scaleGroup);
-      clearGroup(linkGroup);
-      clearGroup(monsterTypeInclude);
-      clearGroup(monsterTypeExclude);
-    }
-    if (!(isAll || isSpellTrap)) {
-      clearGroup(spellTrapGroup);
-    }
-  }
-
-  function clearGroup(group) { if (group) group.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active')); }
-  function getSelected(group) { if (!group) return []; return Array.from(group.querySelectorAll('.filter-btn.active')).map(el => el.dataset.value); }
-  function getCurrentType() { const active = document.querySelector('#typeTags .filter-btn.active'); return active ? active.dataset.type : ''; }
-  function getIncludeLogic() { const active = includeLogicGroup ? includeLogicGroup.querySelector('.logic-btn.active') : null; return active ? active.dataset.logic : 'or'; }
-
-  // ================================================================
-  //  筛选核心（支持排序）
-  // ================================================================
-  function refresh() {
-    const type = getCurrentType();
-    const keyword = searchInput.value.trim().toLowerCase();
-    const selectedAttrs = getSelected(attrGroup);
-    const selectedRaces = getSelected(raceGroup);
-    const selectedLevels = getSelected(levelGroup);
-    const selectedScales = getSelected(scaleGroup);
-    const selectedLinks = getSelected(linkGroup);
-    const selectedSpellTraps = getSelected(spellTrapGroup);
-    const includeTypes = getSelected(monsterTypeInclude);
-    const includeLogic = getIncludeLogic();
-    const excludeTypes = getSelected(monsterTypeExclude);
-
-    filteredCards = allCards.filter(card => {
-      let match = true;
-      if (type && card.type !== type) match = false;
-      if (match && keyword) match = card.name.toLowerCase().includes(keyword);
-      if (match && selectedAttrs.length > 0) match = selectedAttrs.includes(card.attribute);
-      if (match && selectedRaces.length > 0) match = selectedRaces.includes(card.race);
-      if (match && selectedLevels.length > 0) match = selectedLevels.includes(String(card.level));
-      if (match && selectedScales.length > 0) match = selectedScales.includes(String(card.scale));
-      if (match && selectedLinks.length > 0) match = selectedLinks.includes(String(card.link));
-      if (match && selectedSpellTraps.length > 0) match = selectedSpellTraps.includes(card.spell_trap_type);
-      if (match && (includeTypes.length > 0 || excludeTypes.length > 0)) {
-        const typeList = normalizeMonsterType(card.monster_type);
-        if (match && includeTypes.length > 0) {
-          if (includeLogic === 'or') match = includeTypes.some(t => typeList.includes(t));
-          else if (includeLogic === 'and') match = includeTypes.every(t => typeList.includes(t));
-        }
-        if (match && excludeTypes.length > 0) match = !excludeTypes.some(t => typeList.includes(t));
-      }
-      return match;
-    });
-
-    if (currentSort === 'desc') {
-      filteredCards.sort((a, b) => b.id - a.id);
-    } else {
-      filteredCards.sort((a, b) => a.id - b.id);
-    }
-
-    currentPage = 1;
-    renderCards(getPageData());
-    updatePagination(filteredCards.length);
-    totalCount.textContent = filteredCards.length;
-  }
-
-  // ================================================================
-  //  渲染（支持未完成标签）
-  // ================================================================
-  function renderCards(cards) {
-    if (!cards || cards.length === 0) {
-      cardGrid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-16 text-lg">😕 没有找到匹配的卡牌</div>`;
-      return;
-    }
-    cardGrid.innerHTML = cards.map(card => {
-      let badges = [];
-      if (card.type) badges.push({ text: card.type, cls: '' });
-      if (card.attribute) badges.push({ text: card.attribute, cls: 'attr' });
-      if (card.race) badges.push({ text: card.race, cls: '' });
-      const monsterDisplay = getMonsterTypeDisplay(card.monster_type);
-      if (monsterDisplay) badges.push({ text: monsterDisplay, cls: '' });
-      if (card.level !== null && card.level !== undefined) badges.push({ text: `★${card.level}`, cls: '' });
-      if (card.scale !== null && card.scale !== undefined) badges.push({ text: `⚖${card.scale}`, cls: '' });
-      if (card.link !== null && card.link !== undefined) badges.push({ text: `↗${card.link}`, cls: '' });
-      if (card.spell_trap_type) badges.push({ text: card.spell_trap_type, cls: '' });
-      const badgeHTML = badges.map(b => `<span class="badge ${b.cls}">${b.text}</span>`).join('');
-      let statsHTML = '';
-      if (card.atk !== null && card.atk !== undefined) statsHTML += `<span>ATK ${card.atk}</span>`;
-      if (card.def !== null && card.def !== undefined) statsHTML += `<span>DEF ${card.def}</span>`;
-      let imgSrc = card.image;
-      if (Array.isArray(card.images) && card.images.length > 0) {
-        imgSrc = card.images[0];
-      }
-
-      const incomplete = card.incomplete === true;
-
-      return `
-        <div class="card-item ${incomplete ? 'incomplete' : ''}" data-id="${card.id}">
-          <div class="card-image-wrapper">
-            <img class="card-img" src="${imgSrc || 'https://via.placeholder.com/300x450/e8ecf1/9ca3af?text=No+Image'}" alt="${card.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450/e8ecf1/9ca3af?text=Error'" />
-            <div class="card-incomplete-overlay"></div>
-          </div>
-          <div class="card-info">
-            <div class="name">${card.name}</div>
-            <div class="tags">${badgeHTML}</div>
-            <div class="stats">${statsHTML}</div>
+      <div class="modal-right">
+        <div class="modal-name" id="modalName">卡牌名称</div>
+        <div id="modalDetails"></div>
+        <div class="modal-effect-area" id="modalEffectArea">
+          <div id="pendulumEffect" class="modal-effect-box pendulum" style="display:none;"></div>
+          <div id="monsterEffect" class="modal-effect-box monster"></div>
+          <!-- 系列显示区域 -->
+          <div id="modalSeriesContainer" class="modal-series" style="display:none;">
+            <span class="series-badge" id="modalSeriesBadge"></span>
           </div>
         </div>
-      `;
-    }).join('');
-    document.querySelectorAll('.card-item').forEach(el => {
-      el.addEventListener('click', () => {
-        const id = parseInt(el.dataset.id);
-        const card = allCards.find(c => c.id === id);
-        if (card) openDetail(card);
-      });
-    });
-  }
+      </div>
+    </div>
+  </div>
 
-  function updatePagination(total) {
-    const totalPages = Math.ceil(total / pageSize) || 1;
-    pageInfo.textContent = `第 ${currentPage} / ${totalPages} 页`;
-    pageNum.textContent = `${currentPage} / ${totalPages}`;
-    prevBtn.disabled = currentPage <= 1;
-    nextBtn.disabled = currentPage >= totalPages;
-  }
-  function getPageData() {
-    const start = (currentPage - 1) * pageSize;
-    return filteredCards.slice(start, start + pageSize);
-  }
-  function goToPage(delta) {
-    const totalPages = Math.ceil(filteredCards.length / pageSize) || 1;
-    const newPage = currentPage + delta;
-    if (newPage < 1 || newPage > totalPages) return;
-    currentPage = newPage;
-    renderCards(getPageData());
-    updatePagination(filteredCards.length);
-    document.querySelector('.main-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+  <!-- ===== 图片预览遮罩 ===== -->
+  <div class="image-preview-overlay" id="imagePreview">
+    <div class="preview-wrapper" id="previewWrapper">
+      <img id="previewImage" src="" alt="原图" draggable="false" />
+    </div>
+  </div>
 
-  // ================================================================
-  //  排序切换
-  // ================================================================
-  function toggleSort() {
-    currentSort = currentSort === 'desc' ? 'asc' : 'desc';
-    sortToggle.textContent = currentSort === 'desc' ? '倒序（新→旧）' : '正序（旧→新）';
-    refresh();
-  }
-  sortToggle.addEventListener('click', toggleSort);
+  <script>
+    // ================================================================
+    //  数据定义与工具函数（不变）
+    // ================================================================
+    const ATTRIBUTES = ['暗', '光', '地', '水', '炎', '风', '神'];
+    const RACES = [
+      '魔法师族', '龙族', '不死族', '战士族', '兽战士族', '兽族', '鸟兽族',
+      '恶魔族', '天使族', '昆虫族', '恐龙族', '爬虫类族', '鱼族', '海龙族',
+      '水族', '炎族', '雷族', '岩石族', '植物族', '机械族', '念动力族',
+      '幻神兽族', '创造神族', '幻龙族', '电子界族', '幻想魔族'
+    ];
+    const LEVELS = Array.from({ length: 14 }, (_, i) => i);
+    const SCALES = Array.from({ length: 14 }, (_, i) => i);
+    const LINKS = [1,2,3,4,5,6,7,8];
 
-  // ================================================================
-  //  详情弹窗（支持 star_type）
-  // ================================================================
-  function openDetail(card) {
-    currentCard = card;
-    if (Array.isArray(card.images) && card.images.length > 0) {
-      imageList = card.images;
-    } else if (card.image) {
-      imageList = [card.image];
-    } else {
-      imageList = ['https://via.placeholder.com/300x450/e8ecf1/9ca3af?text=No+Image'];
+    const SPELL_TRAP_TYPES = ['装备', '场地', '速攻', '仪式', '永续', '反击', '通常'];
+    const MONSTER_TYPES = [
+      '通常', '效果', '仪式', '融合', '同步', '超量',
+      '卡通', '灵魂', '联合', '二重', '协调',
+      '反转', '灵摆', '特殊召唤', '连接'
+    ];
+
+    function getMonsterTypeDisplay(monsterType) {
+      if (!monsterType) return '';
+      if (Array.isArray(monsterType)) return monsterType.join('／');
+      return monsterType;
     }
-    currentImageIndex = 0;
-    updateImageDisplay();
+    function normalizeMonsterType(monsterType) {
+      if (!monsterType) return [];
+      if (Array.isArray(monsterType)) return monsterType;
+      if (typeof monsterType === 'string') {
+        return monsterType.split('／').filter(s => s.trim() !== '');
+      }
+      return [];
+    }
 
-    modalName.textContent = card.name;
+    function normalizeNameExtra(nameExtra) {
+      if (!nameExtra) return [];
+      if (Array.isArray(nameExtra)) return nameExtra.filter(s => s && s.trim() !== '');
+      if (typeof nameExtra === 'string') {
+        if (nameExtra.includes(',') || nameExtra.includes('，') || nameExtra.includes('／')) {
+          return nameExtra.split(/[,，／]/).map(s => s.trim()).filter(s => s !== '');
+        }
+        return [nameExtra.trim()];
+      }
+      return [];
+    }
 
-    // ---- star_type 逻辑 ----
-    let levelLabel = '等级';
-    if (card.star_type === 'rank') {
-      levelLabel = '阶级';
-    } else if (card.star_type === 'level') {
-      levelLabel = '等级';
-    } else {
-      // 缺省：自动判断
-      const typeList = normalizeMonsterType(card.monster_type);
-      if (typeList.includes('超量')) {
-        levelLabel = '阶级';
+    // ================================================================
+    //  状态
+    // ================================================================
+    let allCards = [], filteredCards = [], currentPage = 1;
+    const pageSize = 36;
+    let currentSort = 'desc';
+
+    const moreFilters = document.getElementById('moreFilters');
+    const moreToggleBtn = document.getElementById('moreToggleBtn');
+    const moreToggleIcon = document.getElementById('moreToggleIcon');
+    const moreToggleText = document.getElementById('moreToggleText');
+    const typeTags = document.querySelectorAll('#typeTags .filter-btn');
+    const cardGrid = document.getElementById('cardGrid');
+    const totalCount = document.getElementById('totalCount');
+    const pageInfo = document.getElementById('pageInfo');
+    const pageNum = document.getElementById('pageNum');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const loadDataBtn = document.getElementById('loadDataBtn');
+    const fileInput = document.getElementById('fileInput');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const sortToggle = document.getElementById('sortToggle');
+
+    let attrGroup, raceGroup, levelGroup, scaleGroup, linkGroup, spellTrapGroup;
+    let monsterTypeInclude, monsterTypeExclude, includeLogicGroup;
+
+    const modal = document.getElementById('detailModal');
+    const modalClose = document.getElementById('modalClose');
+    const modalImg = document.getElementById('modalImg');
+    const modalLeft = document.getElementById('modalLeft');
+    const modalName = document.getElementById('modalName');
+    const modalDetails = document.getElementById('modalDetails');
+    const pendulumEffect = document.getElementById('pendulumEffect');
+    const monsterEffect = document.getElementById('monsterEffect');
+    const modalSeriesContainer = document.getElementById('modalSeriesContainer');
+    const modalSeriesBadge = document.getElementById('modalSeriesBadge');
+
+    const imagePreview = document.getElementById('imagePreview');
+    const previewWrapper = document.getElementById('previewWrapper');
+    const previewImage = document.getElementById('previewImage');
+
+    const prevImageBtn = document.getElementById('prevImageBtn');
+    const nextImageBtn = document.getElementById('nextImageBtn');
+    const imageCounter = document.getElementById('imageCounter');
+    let currentCard = null;
+    let currentImageIndex = 0;
+    let imageList = [];
+
+    let previewState = {
+      scale: 1,
+      translateX: 0,
+      translateY: 0,
+      isDragging: false,
+      startX: 0, startY: 0,
+      originX: 0, originY: 0,
+      hasDragged: false
+    };
+
+    // ================================================================
+    //  折叠切换
+    // ================================================================
+    let isMoreFiltersOpen = false;
+    function toggleMoreFilters() {
+      isMoreFiltersOpen = !isMoreFiltersOpen;
+      if (isMoreFiltersOpen) {
+        moreFilters.classList.remove('hidden');
+        moreToggleIcon.textContent = '▼';
+        moreToggleText.textContent = '收起';
       } else {
-        levelLabel = '等级';
+        moreFilters.classList.add('hidden');
+        moreToggleIcon.textContent = '▶';
+        moreToggleText.textContent = '展开';
+      }
+    }
+    moreToggleBtn.addEventListener('click', toggleMoreFilters);
+
+    // ================================================================
+    //  筛选初始化（不变）
+    // ================================================================
+    function initFilters() {
+      moreFilters.innerHTML = '';
+
+      const rows = [
+        { id: 'attrRow', label: '属性', items: ATTRIBUTES, monster: true },
+        { id: 'raceRow', label: '种族', items: RACES, monster: true },
+        { id: 'levelRow', label: '等级/阶级', items: LEVELS, monster: true },
+        { id: 'scaleRow', label: '灵摆刻度', items: SCALES, monster: true },
+        { id: 'linkRow', label: '连接值', items: LINKS, monster: true },
+        { id: 'spellTrapRow', label: '魔陷种类', items: SPELL_TRAP_TYPES, monster: false, spelltrap: true },
+      ];
+
+      rows.forEach(row => {
+        const div = document.createElement('div');
+        div.className = 'filter-row';
+        if (row.monster) div.dataset.monster = 'true';
+        if (row.spelltrap) div.dataset.spelltrap = 'true';
+        div.id = row.id;
+        const label = document.createElement('span');
+        label.className = 'row-label';
+        label.textContent = row.label;
+        div.appendChild(label);
+        const group = document.createElement('div');
+        group.className = 'btn-group';
+        group.id = row.id + 'Group';
+        row.items.forEach(item => {
+          const btn = document.createElement('button');
+          btn.className = 'filter-btn';
+          btn.dataset.value = String(item);
+          btn.textContent = item;
+          btn.addEventListener('click', () => { btn.classList.toggle('active'); refresh(); });
+          group.appendChild(btn);
+        });
+        div.appendChild(group);
+        moreFilters.appendChild(div);
+        if (row.id === 'attrRow') attrGroup = group;
+        else if (row.id === 'raceRow') raceGroup = group;
+        else if (row.id === 'levelRow') levelGroup = group;
+        else if (row.id === 'scaleRow') scaleGroup = group;
+        else if (row.id === 'linkRow') linkGroup = group;
+        else if (row.id === 'spellTrapRow') spellTrapGroup = group;
+      });
+
+      // ---- 怪兽种类（包含）行 ----
+      const includeRow = document.createElement('div');
+      includeRow.className = 'filter-row';
+      includeRow.id = 'includeRow';
+      includeRow.dataset.monster = 'true';
+      const includeLabel = document.createElement('span');
+      includeLabel.className = 'row-label';
+      includeLabel.textContent = '怪兽种类（包含）';
+      includeRow.appendChild(includeLabel);
+
+      const includeGroup = document.createElement('div');
+      includeGroup.className = 'btn-group';
+      includeGroup.id = 'monsterTypeInclude';
+      MONSTER_TYPES.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.value = item;
+        btn.textContent = item;
+        btn.addEventListener('click', () => { btn.classList.toggle('active'); refresh(); });
+        includeGroup.appendChild(btn);
+      });
+      includeRow.appendChild(includeGroup);
+
+      const logicGroupWrap = document.createElement('div');
+      logicGroupWrap.className = 'logic-btn-group';
+      ['OR', 'AND'].forEach(logic => {
+        const btn = document.createElement('button');
+        btn.className = 'logic-btn' + (logic === 'OR' ? ' active' : '');
+        btn.dataset.logic = logic.toLowerCase();
+        btn.textContent = logic;
+        btn.addEventListener('click', () => {
+          logicGroupWrap.querySelectorAll('.logic-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          refresh();
+        });
+        logicGroupWrap.appendChild(btn);
+      });
+      includeRow.appendChild(logicGroupWrap);
+      moreFilters.appendChild(includeRow);
+      monsterTypeInclude = includeGroup;
+      includeLogicGroup = logicGroupWrap;
+
+      // ---- 怪兽种类（排除）行 ----
+      const excludeRow = document.createElement('div');
+      excludeRow.className = 'filter-row';
+      excludeRow.id = 'excludeRow';
+      excludeRow.dataset.monster = 'true';
+      const excludeLabel = document.createElement('span');
+      excludeLabel.className = 'row-label exclude-label';
+      excludeLabel.textContent = '怪兽种类（排除）';
+      excludeRow.appendChild(excludeLabel);
+      const excludeGroup = document.createElement('div');
+      excludeGroup.className = 'btn-group';
+      excludeGroup.id = 'monsterTypeExclude';
+      MONSTER_TYPES.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.value = item;
+        btn.textContent = item;
+        btn.addEventListener('click', () => { btn.classList.toggle('active'); refresh(); });
+        excludeGroup.appendChild(btn);
+      });
+      excludeRow.appendChild(excludeGroup);
+      moreFilters.appendChild(excludeRow);
+      monsterTypeExclude = excludeGroup;
+
+      document.querySelectorAll('[data-spelltrap="true"]').forEach(el => el.classList.add('hidden'));
+
+      typeTags.forEach(btn => {
+        btn.removeEventListener('click', typeClickHandler);
+        btn.addEventListener('click', typeClickHandler);
+      });
+
+      toggleFilterRows();
+    }
+
+    function typeClickHandler() {
+      typeTags.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      toggleFilterRows();
+      refresh();
+    }
+
+    function toggleFilterRows() {
+      const type = getCurrentType();
+      const isAll = (type === '');
+      const isMonster = (type === '怪兽');
+      const isSpellTrap = (type === '魔法' || type === '陷阱');
+
+      document.querySelectorAll('[data-monster="true"]').forEach(el => {
+        el.classList.toggle('hidden', !(isAll || isMonster));
+      });
+      document.querySelectorAll('[data-spelltrap="true"]').forEach(el => {
+        el.classList.toggle('hidden', !(isAll || isSpellTrap));
+      });
+
+      if (!(isAll || isMonster)) {
+        clearGroup(attrGroup);
+        clearGroup(raceGroup);
+        clearGroup(levelGroup);
+        clearGroup(scaleGroup);
+        clearGroup(linkGroup);
+        clearGroup(monsterTypeInclude);
+        clearGroup(monsterTypeExclude);
+      }
+      if (!(isAll || isSpellTrap)) {
+        clearGroup(spellTrapGroup);
       }
     }
 
-    let line1 = '';
-    if (card.attribute) line1 += `<span class="field"><span class="label">属性：</span><span class="value value-attr-${card.attribute}">${card.attribute}</span></span>`;
-    if (card.level !== null && card.level !== undefined) {
-      line1 += `<span class="field"><span class="label">${levelLabel}：</span><span class="value value-level">${card.level}</span></span>`;
+    function clearGroup(group) { if (group) group.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active')); }
+    function getSelected(group) { if (!group) return []; return Array.from(group.querySelectorAll('.filter-btn.active')).map(el => el.dataset.value); }
+    function getCurrentType() { const active = document.querySelector('#typeTags .filter-btn.active'); return active ? active.dataset.type : ''; }
+    function getIncludeLogic() {
+      const active = document.querySelector('#includeRow .logic-btn.active');
+      return active ? active.dataset.logic : 'or';
     }
-    if (card.race) line1 += `<span class="field"><span class="label">种族：</span><span class="value value-race">${card.race}</span></span>`;
 
-    let line2 = '';
-    if (card.scale !== null && card.scale !== undefined) line2 += `<span class="field"><span class="label">灵摆刻度：</span><span class="value value-scale">${card.scale}</span></span>`;
-    if (card.link !== null && card.link !== undefined) line2 += `<span class="field"><span class="label">连接值：</span><span class="value value-link">${card.link}</span></span>`;
+    // ================================================================
+    //  筛选核心（支持 name_extra 搜索）
+    // ================================================================
+    function refresh() {
+      const type = getCurrentType();
+      const keyword = searchInput.value.trim().toLowerCase();
+      const selectedAttrs = getSelected(attrGroup);
+      const selectedRaces = getSelected(raceGroup);
+      const selectedLevels = getSelected(levelGroup);
+      const selectedScales = getSelected(scaleGroup);
+      const selectedLinks = getSelected(linkGroup);
+      const selectedSpellTraps = getSelected(spellTrapGroup);
+      const includeTypes = getSelected(monsterTypeInclude);
+      const includeLogic = getIncludeLogic();
+      const excludeTypes = getSelected(monsterTypeExclude);
 
-    let line3 = '';
-    const monsterDisplay = getMonsterTypeDisplay(card.monster_type);
-    if (monsterDisplay) line3 = `<span class="field"><span class="label">怪兽特性：</span><span class="value value-monster-type">${monsterDisplay}</span></span>`;
-
-    let line4 = '';
-    if (card.atk !== null && card.atk !== undefined) line4 += `<span class="field"><span class="label">攻击力：</span><span class="value value-atk">${card.atk}</span></span>`;
-    if (card.def !== null && card.def !== undefined) line4 += `<span class="field"><span class="label">守备力：</span><span class="value value-def">${card.def}</span></span>`;
-
-    let line5 = '';
-    if (card.spell_trap_type) line5 = `<span class="field"><span class="label">魔陷种类：</span><span class="value value-spell-trap">${card.spell_trap_type}</span></span>`;
-
-    let detailsHTML = '';
-    if (line1) detailsHTML += `<div class="modal-detail-line">${line1}</div>`;
-    if (line2) detailsHTML += `<div class="modal-detail-line">${line2}</div>`;
-    if (line3) detailsHTML += `<div class="modal-detail-line">${line3}</div>`;
-    if (line4) detailsHTML += `<div class="modal-detail-line">${line4}</div>`;
-    if (line5) detailsHTML += `<div class="modal-detail-line">${line5}</div>`;
-    modalDetails.innerHTML = detailsHTML;
-
-    if (card.pendulum_desc) {
-      pendulumEffect.textContent = card.pendulum_desc;
-      pendulumEffect.style.display = 'block';
-    } else {
-      pendulumEffect.style.display = 'none';
-    }
-    monsterEffect.textContent = card.desc || '';
-
-    // 未完成卡禁用大图预览
-    if (card.incomplete === true) {
-      modalImg.style.cursor = 'default';
-      modalImg.onclick = null;
-    } else {
-      modalImg.style.cursor = 'pointer';
-      modalImg.onclick = function(e) {
-        e.stopPropagation();
-        const src = modalImg.src;
-        if (src && !src.includes('placeholder')) {
-          openImagePreview(src);
+      filteredCards = allCards.filter(card => {
+        let match = true;
+        if (type && card.type !== type) match = false;
+        if (match && keyword) {
+          let nameMatch = card.name.toLowerCase().includes(keyword);
+          if (!nameMatch && card.name_extra && Array.isArray(card.name_extra)) {
+            nameMatch = card.name_extra.some(extra => extra.toLowerCase().includes(keyword));
+          }
+          if (!nameMatch) match = false;
         }
-      };
+        if (match && selectedAttrs.length > 0) match = selectedAttrs.includes(card.attribute);
+        if (match && selectedRaces.length > 0) match = selectedRaces.includes(card.race);
+        if (match && selectedLevels.length > 0) match = selectedLevels.includes(String(card.level));
+        if (match && selectedScales.length > 0) match = selectedScales.includes(String(card.scale));
+        if (match && selectedLinks.length > 0) match = selectedLinks.includes(String(card.link));
+        if (match && selectedSpellTraps.length > 0) match = selectedSpellTraps.includes(card.spell_trap_type);
+        if (match && (includeTypes.length > 0 || excludeTypes.length > 0)) {
+          const typeList = normalizeMonsterType(card.monster_type);
+          if (match && includeTypes.length > 0) {
+            if (includeLogic === 'or') match = includeTypes.some(t => typeList.includes(t));
+            else if (includeLogic === 'and') match = includeTypes.every(t => typeList.includes(t));
+          }
+          if (match && excludeTypes.length > 0) match = !excludeTypes.some(t => typeList.includes(t));
+        }
+        return match;
+      });
+
+      if (currentSort === 'desc') {
+        filteredCards.sort((a, b) => b.id - a.id);
+      } else {
+        filteredCards.sort((a, b) => a.id - b.id);
+      }
+
+      currentPage = 1;
+      renderCards(getPageData());
+      updatePagination(filteredCards.length);
+      totalCount.textContent = filteredCards.length;
     }
 
-    modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
+    // ================================================================
+    //  渲染（系列标签浅色无阴影）
+    // ================================================================
+    function renderCards(cards) {
+      if (!cards || cards.length === 0) {
+        cardGrid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-16 text-lg">😕 没有找到匹配的卡牌</div>`;
+        return;
+      }
+      cardGrid.innerHTML = cards.map(card => {
+        let badges = [];
+        if (card.type) badges.push({ text: card.type, cls: '' });
+        if (card.attribute) badges.push({ text: card.attribute, cls: 'attr' });
+        if (card.race) badges.push({ text: card.race, cls: '' });
+        const monsterDisplay = getMonsterTypeDisplay(card.monster_type);
+        if (monsterDisplay) badges.push({ text: monsterDisplay, cls: '' });
+        if (card.level !== null && card.level !== undefined) badges.push({ text: `★${card.level}`, cls: '' });
+        if (card.scale !== null && card.scale !== undefined) badges.push({ text: `⚖${card.scale}`, cls: '' });
+        if (card.link !== null && card.link !== undefined) badges.push({ text: `↗${card.link}`, cls: '' });
+        if (card.spell_trap_type) badges.push({ text: card.spell_trap_type, cls: '' });
+        const badgeHTML = badges.map(b => `<span class="badge ${b.cls}">${b.text}</span>`).join('');
+        let statsHTML = '';
+        if (card.atk !== null && card.atk !== undefined) statsHTML += `<span>ATK ${card.atk}</span>`;
+        if (card.def !== null && card.def !== undefined) statsHTML += `<span>DEF ${card.def}</span>`;
+        let imgSrc = card.image;
+        if (Array.isArray(card.images) && card.images.length > 0) {
+          imgSrc = card.images[0];
+        }
 
-  function updateImageDisplay() {
-    if (imageList.length === 0) return;
-    const imgSrc = imageList[currentImageIndex];
-    modalImg.src = imgSrc;
-    modalImg.alt = currentCard ? currentCard.name : '卡牌图片';
-    prevImageBtn.disabled = currentImageIndex === 0;
-    nextImageBtn.disabled = currentImageIndex === imageList.length - 1;
-    imageCounter.textContent = `${currentImageIndex + 1} / ${imageList.length}`;
-  }
+        const incomplete = card.incomplete === true;
+        const seriesHTML = card.series ? `<div class="card-series">${card.series}</div>` : '';
 
-  function prevImage() {
-    if (currentImageIndex > 0) {
-      currentImageIndex--;
+        return `
+          <div class="card-item ${incomplete ? 'incomplete' : ''}" data-id="${card.id}">
+            <div class="card-image-wrapper">
+              <img class="card-img" src="${imgSrc || 'https://via.placeholder.com/300x450/e8ecf1/9ca3af?text=No+Image'}" alt="${card.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450/e8ecf1/9ca3af?text=Error'" />
+              <div class="card-incomplete-overlay"></div>
+            </div>
+            <div class="card-info">
+              <div class="name">${card.name}</div>
+              <div class="tags">${badgeHTML}</div>
+              <div class="stats">${statsHTML}</div>
+            </div>
+            ${seriesHTML}
+          </div>
+        `;
+      }).join('');
+      document.querySelectorAll('.card-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const id = parseInt(el.dataset.id);
+          const card = allCards.find(c => c.id === id);
+          if (card) openDetail(card);
+        });
+      });
+    }
+
+    function updatePagination(total) {
+      const totalPages = Math.ceil(total / pageSize) || 1;
+      pageInfo.textContent = `第 ${currentPage} / ${totalPages} 页`;
+      pageNum.textContent = `${currentPage} / ${totalPages}`;
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= totalPages;
+    }
+    function getPageData() {
+      const start = (currentPage - 1) * pageSize;
+      return filteredCards.slice(start, start + pageSize);
+    }
+    function goToPage(delta) {
+      const totalPages = Math.ceil(filteredCards.length / pageSize) || 1;
+      const newPage = currentPage + delta;
+      if (newPage < 1 || newPage > totalPages) return;
+      currentPage = newPage;
+      renderCards(getPageData());
+      updatePagination(filteredCards.length);
+      document.querySelector('.main-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ================================================================
+    //  排序
+    // ================================================================
+    function toggleSort() {
+      currentSort = currentSort === 'desc' ? 'asc' : 'desc';
+      sortToggle.textContent = currentSort === 'desc' ? '倒序（新→旧）' : '正序（旧→新）';
+      refresh();
+    }
+    sortToggle.addEventListener('click', toggleSort);
+
+    // ================================================================
+    //  详情弹窗（系列右对齐，无标签；灵摆效果绿底深绿边框1px）
+    // ================================================================
+    function openDetail(card) {
+      currentCard = card;
+      if (Array.isArray(card.images) && card.images.length > 0) {
+        imageList = card.images;
+      } else if (card.image) {
+        imageList = [card.image];
+      } else {
+        imageList = ['https://via.placeholder.com/300x450/e8ecf1/9ca3af?text=No+Image'];
+      }
+      currentImageIndex = 0;
       updateImageDisplay();
+
+      modalName.textContent = card.name;
+
+      let levelLabel = '等级';
+      if (card.star_type === 'rank') levelLabel = '阶级';
+      else if (card.star_type === 'level') levelLabel = '等级';
+      else {
+        const typeList = normalizeMonsterType(card.monster_type);
+        if (typeList.includes('超量')) levelLabel = '阶级';
+        else levelLabel = '等级';
+      }
+
+      let line1 = '';
+      if (card.attribute) line1 += `<span class="field"><span class="label">属性：</span><span class="value value-attr-${card.attribute}">${card.attribute}</span></span>`;
+      if (card.level !== null && card.level !== undefined) {
+        line1 += `<span class="field"><span class="label">${levelLabel}：</span><span class="value value-level">${card.level}</span></span>`;
+      }
+      if (card.race) line1 += `<span class="field"><span class="label">种族：</span><span class="value value-race">${card.race}</span></span>`;
+
+      let line2 = '';
+      if (card.scale !== null && card.scale !== undefined) line2 += `<span class="field"><span class="label">灵摆刻度：</span><span class="value value-scale">${card.scale}</span></span>`;
+      if (card.link !== null && card.link !== undefined) line2 += `<span class="field"><span class="label">连接值：</span><span class="value value-link">${card.link}</span></span>`;
+
+      let line3 = '';
+      const monsterDisplay = getMonsterTypeDisplay(card.monster_type);
+      if (monsterDisplay) line3 = `<span class="field"><span class="label">怪兽种类：</span><span class="value value-monster-type">${monsterDisplay}</span></span>`;
+
+      let line4 = '';
+      if (card.atk !== null && card.atk !== undefined) line4 += `<span class="field"><span class="label">攻击力：</span><span class="value value-atk">${card.atk}</span></span>`;
+      if (card.def !== null && card.def !== undefined) line4 += `<span class="field"><span class="label">守备力：</span><span class="value value-def">${card.def}</span></span>`;
+
+      let line5 = '';
+      if (card.spell_trap_type) line5 = `<span class="field"><span class="label">魔陷种类：</span><span class="value value-spell-trap">${card.spell_trap_type}</span></span>`;
+
+      let detailsHTML = '';
+      if (line1) detailsHTML += `<div class="modal-detail-line">${line1}</div>`;
+      if (line2) detailsHTML += `<div class="modal-detail-line">${line2}</div>`;
+      if (line3) detailsHTML += `<div class="modal-detail-line">${line3}</div>`;
+      if (line4) detailsHTML += `<div class="modal-detail-line">${line4}</div>`;
+      if (line5) detailsHTML += `<div class="modal-detail-line">${line5}</div>`;
+      modalDetails.innerHTML = detailsHTML;
+
+      if (card.pendulum_desc) {
+        pendulumEffect.textContent = card.pendulum_desc;
+        pendulumEffect.style.display = 'block';
+      } else {
+        pendulumEffect.style.display = 'none';
+      }
+      monsterEffect.textContent = card.desc || '';
+
+      if (card.series) {
+        modalSeriesBadge.textContent = card.series;
+        modalSeriesContainer.style.display = 'flex';
+      } else {
+        modalSeriesContainer.style.display = 'none';
+      }
+
+      if (card.incomplete === true) {
+        modalImg.style.cursor = 'default';
+        modalImg.onclick = null;
+      } else {
+        modalImg.style.cursor = 'pointer';
+        modalImg.onclick = function(e) {
+          e.stopPropagation();
+          const src = modalImg.src;
+          if (src && !src.includes('placeholder')) {
+            openImagePreview(src);
+          }
+        };
+      }
+
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
-  }
-  function nextImage() {
-    if (currentImageIndex < imageList.length - 1) {
-      currentImageIndex++;
-      updateImageDisplay();
+
+    function updateImageDisplay() {
+      if (imageList.length === 0) return;
+      const imgSrc = imageList[currentImageIndex];
+      modalImg.src = imgSrc;
+      modalImg.alt = currentCard ? currentCard.name : '卡牌图片';
+      prevImageBtn.disabled = currentImageIndex === 0;
+      nextImageBtn.disabled = currentImageIndex === imageList.length - 1;
+      imageCounter.textContent = `${currentImageIndex + 1} / ${imageList.length}`;
     }
-  }
 
-  prevImageBtn.addEventListener('click', prevImage);
-  nextImageBtn.addEventListener('click', nextImage);
-
-  function closeDetail() {
-    modal.classList.remove('open');
-    document.body.style.overflow = '';
-    modalImg.onclick = null;
-    currentCard = null;
-    imageList = [];
-    currentImageIndex = 0;
-    if (imagePreview.classList.contains('open')) {
-      imagePreview.classList.remove('open');
-      previewImage.src = '';
+    function prevImage() {
+      if (currentImageIndex > 0) {
+        currentImageIndex--;
+        updateImageDisplay();
+      }
     }
-  }
-
-  // ================================================================
-  //  图片预览
-  // ================================================================
-  function openImagePreview(src) {
-    previewState.scale = 1;
-    previewState.translateX = 0;
-    previewState.translateY = 0;
-    previewState.isDragging = false;
-    previewState.hasDragged = false;
-
-    previewImage.src = src;
-    previewImage.onload = function() {
-      const nw = previewImage.naturalWidth;
-      const nh = previewImage.naturalHeight;
-      const winW = window.innerWidth * 0.92;
-      const winH = window.innerHeight * 0.92;
-      const scaleX = winW / nw;
-      const scaleY = winH / nh;
-      const initScale = Math.min(scaleX, scaleY, 1);
-      previewState.scale = initScale;
-      applyPreviewTransform();
-      imagePreview.classList.add('open');
-    };
-    if (previewImage.complete) {
-      previewImage.onload();
+    function nextImage() {
+      if (currentImageIndex < imageList.length - 1) {
+        currentImageIndex++;
+        updateImageDisplay();
+      }
     }
-  }
 
-  function applyPreviewTransform() {
-    previewImage.style.transform = `translate(${previewState.translateX}px, ${previewState.translateY}px) scale(${previewState.scale})`;
-  }
+    prevImageBtn.addEventListener('click', prevImage);
+    nextImageBtn.addEventListener('click', nextImage);
 
-  function handleWheel(e) {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    const newScale = Math.min(Math.max(previewState.scale + delta, 0.2), 5);
-    if (newScale === previewState.scale) return;
-
-    const rect = previewImage.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-    const ratioX = offsetX / rect.width;
-    const ratioY = offsetY / rect.height;
-
-    const oldScale = previewState.scale;
-    const newTransX = previewState.translateX - (newScale - oldScale) * (rect.width / 2) * (ratioX - 0.5);
-    const newTransY = previewState.translateY - (newScale - oldScale) * (rect.height / 2) * (ratioY - 0.5);
-
-    previewState.scale = newScale;
-    previewState.translateX = newTransX;
-    previewState.translateY = newTransY;
-    applyPreviewTransform();
-  }
-
-  function initDrag(e) {
-    e.preventDefault();
-    const ev = e.type === 'touchstart' ? e.touches[0] : e;
-    previewState.isDragging = true;
-    previewState.hasDragged = false;
-    previewState.startX = ev.clientX;
-    previewState.startY = ev.clientY;
-    previewState.originX = previewState.translateX;
-    previewState.originY = previewState.translateY;
-    previewWrapper.style.cursor = 'grabbing';
-  }
-
-  function moveDrag(e) {
-    if (!previewState.isDragging) return;
-    e.preventDefault();
-    const ev = e.type === 'touchmove' ? e.touches[0] : e;
-    const dx = ev.clientX - previewState.startX;
-    const dy = ev.clientY - previewState.startY;
-    previewState.translateX = previewState.originX + dx;
-    previewState.translateY = previewState.originY + dy;
-    if (Math.sqrt(dx*dx + dy*dy) > 5) previewState.hasDragged = true;
-    applyPreviewTransform();
-  }
-
-  function endDrag(e) {
-    if (previewState.isDragging) {
-      previewState.isDragging = false;
-      previewWrapper.style.cursor = 'grab';
+    function closeDetail() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+      modalImg.onclick = null;
+      currentCard = null;
+      imageList = [];
+      currentImageIndex = 0;
+      if (imagePreview.classList.contains('open')) {
+        imagePreview.classList.remove('open');
+        previewImage.src = '';
+      }
     }
-  }
 
-  function handlePreviewClick(e) {
-    if (previewState.hasDragged) {
-      previewState.hasDragged = false;
-      return;
-    }
-    if (e.target === imagePreview || e.target === previewWrapper) {
-      imagePreview.classList.remove('open');
-      previewImage.src = '';
+    // ================================================================
+    //  图片预览（不变）
+    // ================================================================
+    function openImagePreview(src) {
       previewState.scale = 1;
       previewState.translateX = 0;
       previewState.translateY = 0;
-      applyPreviewTransform();
-    }
-  }
+      previewState.isDragging = false;
+      previewState.hasDragged = false;
 
-  function initPreviewEvents() {
-    previewWrapper.addEventListener('wheel', handleWheel, { passive: false });
-    previewWrapper.addEventListener('mousedown', initDrag);
-    document.addEventListener('mousemove', moveDrag);
-    document.addEventListener('mouseup', endDrag);
-    previewWrapper.addEventListener('touchstart', initDrag, { passive: false });
-    document.addEventListener('touchmove', moveDrag, { passive: false });
-    document.addEventListener('touchend', endDrag);
-    imagePreview.addEventListener('click', handlePreviewClick);
-  }
-  initPreviewEvents();
-
-  // ================================================================
-  //  数据加载：从服务器远程获取、从缓存读取、手动上传
-  // ================================================================
-
-  // 核心加载函数：接收 JSON 字符串，解析并存入缓存
-  function loadDataFromJSON(jsonData) {
-    try {
-      const data = JSON.parse(jsonData);
-      if (!Array.isArray(data)) throw new Error('数据必须是数组');
-      
-      // 存入 localStorage
-      localStorage.setItem('yugioh_card_data', jsonData);
-      localStorage.setItem('yugioh_card_count', data.length);
-      
-      allCards = data;
-      filteredCards = [...allCards];
-      refresh();
-      totalCount.textContent = filteredCards.length;
-//      cardGrid.innerHTML = '';
-      
-      console.log(`✅ 已加载 ${data.length} 张卡片，已写入缓存`);
-    } catch (e) {
-      alert('数据格式错误，请确保是有效的卡牌数组 JSON。');
-      console.error(e);
-    }
-  }
-
-  // 从 localStorage 读取缓存
-  function loadFromCache() {
-    const cached = localStorage.getItem('yugioh_card_data');
-    if (cached) {
-      try {
-        const data = JSON.parse(cached);
-        if (Array.isArray(data) && data.length > 0) {
-          allCards = data;
-          filteredCards = [...allCards];
-          refresh();
-          totalCount.textContent = filteredCards.length;
-          console.log(`📦 从缓存加载了 ${data.length} 张卡片`);
-          return true;
-        }
-      } catch (e) {
-        console.warn('缓存数据损坏，已忽略');
+      previewImage.src = src;
+      previewImage.onload = function() {
+        const nw = previewImage.naturalWidth;
+        const nh = previewImage.naturalHeight;
+        const winW = window.innerWidth * 0.92;
+        const winH = window.innerHeight * 0.92;
+        const scaleX = winW / nw;
+        const scaleY = winH / nh;
+        const initScale = Math.min(scaleX, scaleY, 1);
+        previewState.scale = initScale;
+        applyPreviewTransform();
+        imagePreview.classList.add('open');
+      };
+      if (previewImage.complete) {
+        previewImage.onload();
       }
     }
-    return false;
-  }
 
-  // 从服务器同目录下的 cards.json 加载
-  async function fetchRemoteData() {
-    try {
-      // 添加时间戳防止浏览器缓存
-      const url = './cards.json?t=' + Date.now();
-      const response = await fetch(url, { cache: 'no-cache' });
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-      
-      const jsonData = await response.text();
-      loadDataFromJSON(jsonData);
-      console.log('🌐 已从服务器加载 cards.json');
-      return true;
-    } catch (error) {
-      console.warn('远程加载失败:', error.message);
-      return false;
+    function applyPreviewTransform() {
+      previewImage.style.transform = `translate(${previewState.translateX}px, ${previewState.translateY}px) scale(${previewState.scale})`;
     }
-  }
 
-  // 手动上传文件处理
-  function handleFileLoad(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => { loadDataFromJSON(e.target.result); };
-    reader.onerror = () => { alert('读取文件失败'); };
-    reader.readAsText(file);
-  }
+    function handleWheel(e) {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      const newScale = Math.min(Math.max(previewState.scale + delta, 0.2), 5);
+      if (newScale === previewState.scale) return;
 
-  // ================================================================
-  //  事件绑定
-  // ================================================================
-  loadDataBtn.addEventListener('click', () => fileInput.click());
-  fileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) handleFileLoad(e.target.files[0]);
-    fileInput.value = '';
-  });
+      const rect = previewImage.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+      const ratioX = offsetX / rect.width;
+      const ratioY = offsetY / rect.height;
 
-  // 清除缓存按钮
-  document.getElementById('clearCacheBtn').addEventListener('click', function() {
-    if (confirm('确定要清除本地缓存的卡牌数据吗？')) {
-      localStorage.removeItem('yugioh_card_data');
-      localStorage.removeItem('yugioh_card_count');
-      allCards = [];
-      filteredCards = [];
-      cardGrid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-16">🗑️ 缓存已清除，请重新加载数据</div>`;
-      totalCount.textContent = '0';
-      refresh(); // 刷新空列表
-      console.log('缓存已清除');
+      const oldScale = previewState.scale;
+      const newTransX = previewState.translateX - (newScale - oldScale) * (rect.width / 2) * (ratioX - 0.5);
+      const newTransY = previewState.translateY - (newScale - oldScale) * (rect.height / 2) * (ratioY - 0.5);
+
+      previewState.scale = newScale;
+      previewState.translateX = newTransX;
+      previewState.translateY = newTransY;
+      applyPreviewTransform();
     }
-  });
 
-  prevBtn.addEventListener('click', () => goToPage(-1));
-  nextBtn.addEventListener('click', () => goToPage(1));
-  modalClose.addEventListener('click', closeDetail);
-  modal.addEventListener('click', (e) => { if (e.target === modal) closeDetail(); });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (imagePreview.classList.contains('open')) {
+    function initDrag(e) {
+      e.preventDefault();
+      const ev = e.type === 'touchstart' ? e.touches[0] : e;
+      previewState.isDragging = true;
+      previewState.hasDragged = false;
+      previewState.startX = ev.clientX;
+      previewState.startY = ev.clientY;
+      previewState.originX = previewState.translateX;
+      previewState.originY = previewState.translateY;
+      previewWrapper.style.cursor = 'grabbing';
+    }
+
+    function moveDrag(e) {
+      if (!previewState.isDragging) return;
+      e.preventDefault();
+      const ev = e.type === 'touchmove' ? e.touches[0] : e;
+      const dx = ev.clientX - previewState.startX;
+      const dy = ev.clientY - previewState.startY;
+      previewState.translateX = previewState.originX + dx;
+      previewState.translateY = previewState.originY + dy;
+      if (Math.sqrt(dx*dx + dy*dy) > 5) previewState.hasDragged = true;
+      applyPreviewTransform();
+    }
+
+    function endDrag(e) {
+      if (previewState.isDragging) {
+        previewState.isDragging = false;
+        previewWrapper.style.cursor = 'grab';
+      }
+    }
+
+    function handlePreviewClick(e) {
+      if (previewState.hasDragged) {
+        previewState.hasDragged = false;
+        return;
+      }
+      if (e.target === imagePreview || e.target === previewWrapper) {
         imagePreview.classList.remove('open');
         previewImage.src = '';
         previewState.scale = 1;
         previewState.translateX = 0;
         previewState.translateY = 0;
         applyPreviewTransform();
-      } else {
-        closeDetail();
       }
     }
-    if (modal.classList.contains('open')) {
-      if (e.key === 'ArrowLeft') prevImage();
-      else if (e.key === 'ArrowRight') nextImage();
+
+    function initPreviewEvents() {
+      previewWrapper.addEventListener('wheel', handleWheel, { passive: false });
+      previewWrapper.addEventListener('mousedown', initDrag);
+      document.addEventListener('mousemove', moveDrag);
+      document.addEventListener('mouseup', endDrag);
+      previewWrapper.addEventListener('touchstart', initDrag, { passive: false });
+      document.addEventListener('touchmove', moveDrag, { passive: false });
+      document.addEventListener('touchend', endDrag);
+      imagePreview.addEventListener('click', handlePreviewClick);
     }
-  });
+    initPreviewEvents();
 
-  let searchTimer;
-  searchInput.addEventListener('input', () => {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(refresh, 300);
-  });
-  searchBtn.addEventListener('click', refresh);
-  clearSearchBtn.addEventListener('click', () => {
-    searchInput.value = '';
-    refresh();
-  });
-
-  // ================================================================
-  //  启动程序
-  // ================================================================
-  initFilters();
-
-  // 启动流程：优先尝试远程加载，若失败则尝试缓存，若都没有则显示空状态
-  (async function boot() {
-    const remoteOk = await fetchRemoteData();
-    if (!remoteOk) {
-      // 远程失败，尝试缓存
-      const cacheOk = loadFromCache();
-      if (!cacheOk) {
-        cardGrid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-16">📂 未找到数据，请点击右上角「加载数据」上传 cards.json</div>`;
+    // ================================================================
+    //  数据加载（处理 name_extra 归一化）
+    // ================================================================
+    function loadDataFromJSON(jsonData) {
+      try {
+        const data = JSON.parse(jsonData);
+        if (!Array.isArray(data)) throw new Error('数据必须是数组');
+        data.forEach(card => {
+          if (card.name_extra !== undefined) {
+            card.name_extra = normalizeNameExtra(card.name_extra);
+          } else {
+            card.name_extra = [];
+          }
+          if (!card.series) card.series = '';
+        });
+        localStorage.setItem('yugioh_card_data', JSON.stringify(data));
+        localStorage.setItem('yugioh_card_count', data.length);
+        allCards = data;
+        filteredCards = [...allCards];
+        refresh();
+        totalCount.textContent = filteredCards.length;
+        console.log(`✅ 已加载 ${data.length} 张卡片，已写入缓存`);
+      } catch (e) {
+        alert('数据格式错误，请确保是有效的卡牌数组 JSON。');
+        console.error(e);
       }
     }
-  })();
-</script>
 
+    function loadFromCache() {
+      const cached = localStorage.getItem('yugioh_card_data');
+      if (cached) {
+        try {
+          const data = JSON.parse(cached);
+          if (Array.isArray(data) && data.length > 0) {
+            data.forEach(card => {
+              if (card.name_extra !== undefined) {
+                card.name_extra = normalizeNameExtra(card.name_extra);
+              } else {
+                card.name_extra = [];
+              }
+              if (!card.series) card.series = '';
+            });
+            allCards = data;
+            filteredCards = [...allCards];
+            refresh();
+            totalCount.textContent = filteredCards.length;
+            console.log(`📦 从缓存加载了 ${data.length} 张卡片`);
+            return true;
+          }
+        } catch (e) {
+          console.warn('缓存数据损坏，已忽略');
+        }
+      }
+      return false;
+    }
+
+    async function fetchRemoteData() {
+      try {
+        const url = './cards.json?t=' + Date.now();
+        const response = await fetch(url, { cache: 'no-cache' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const jsonData = await response.text();
+        loadDataFromJSON(jsonData);
+        console.log('🌐 已从服务器加载 cards.json');
+        return true;
+      } catch (error) {
+        console.warn('远程加载失败:', error.message);
+        return false;
+      }
+    }
+
+    function handleFileLoad(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => { loadDataFromJSON(e.target.result); };
+      reader.onerror = () => { alert('读取文件失败'); };
+      reader.readAsText(file);
+    }
+
+    // ================================================================
+    //  事件绑定
+    // ================================================================
+    loadDataBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) handleFileLoad(e.target.files[0]);
+      fileInput.value = '';
+    });
+
+    document.getElementById('clearCacheBtn').addEventListener('click', function() {
+      if (confirm('确定要清除本地缓存的卡牌数据吗？')) {
+        localStorage.removeItem('yugioh_card_data');
+        localStorage.removeItem('yugioh_card_count');
+        allCards = [];
+        filteredCards = [];
+        cardGrid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-16">🗑️ 缓存已清除，请重新加载数据</div>`;
+        totalCount.textContent = '0';
+        refresh();
+        console.log('缓存已清除');
+      }
+    });
+
+    prevBtn.addEventListener('click', () => goToPage(-1));
+    nextBtn.addEventListener('click', () => goToPage(1));
+    modalClose.addEventListener('click', closeDetail);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeDetail(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (imagePreview.classList.contains('open')) {
+          imagePreview.classList.remove('open');
+          previewImage.src = '';
+          previewState.scale = 1;
+          previewState.translateX = 0;
+          previewState.translateY = 0;
+          applyPreviewTransform();
+        } else {
+          closeDetail();
+        }
+      }
+      if (modal.classList.contains('open')) {
+        if (e.key === 'ArrowLeft') prevImage();
+        else if (e.key === 'ArrowRight') nextImage();
+      }
+    });
+
+    let searchTimer;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(refresh, 300);
+    });
+    searchBtn.addEventListener('click', refresh);
+    clearSearchBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      refresh();
+    });
+
+    // ================================================================
+    //  启动
+    // ================================================================
+    initFilters();
+
+    (async function boot() {
+      const remoteOk = await fetchRemoteData();
+      if (!remoteOk) {
+        const cacheOk = loadFromCache();
+        if (!cacheOk) {
+          cardGrid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-16">📂 未找到数据，请点击右上角「加载数据」上传 cards.json</div>`;
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
